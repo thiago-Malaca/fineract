@@ -44,13 +44,13 @@ fineractUI:
   image:
     name: openmf/community-app
     tag: latest
-    resources:
-      requests:
-        memory: "128Mi"
-        cpu: "100m"
-      limits:
-        memory: "256Mi"
-        cpu: "200m" 
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m" 
 
 # Globals will be available to subcharts
 global:
