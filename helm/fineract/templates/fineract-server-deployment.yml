@@ -87,5 +87,5 @@ spec:
             timeoutSeconds: 10
           {{- if .Values.fineractServer.resources }}
           resources:
-          {{- .Values.fineractServer.resources | toYaml | nindent 10 }}
+            {{- toYaml .Values.fineractServer.resources | nindent 12 }}
           {{- end }}
