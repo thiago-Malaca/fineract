@@ -85,10 +85,7 @@ spec:
               port: 8080
             initialDelaySeconds: 300
             timeoutSeconds: 10
+          {{- if .Values.fineractServer.resources }}
           resources:
-            requests:
-              memory: "500Mi"
-              cpu: "200m"
-            limits:
-              memory: "1Gi"
-              cpu: "500m" 
+          {{- .Values.fineractServer.resources | toYaml | nindent 10 }}
+          {{- end }}

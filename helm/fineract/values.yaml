@@ -31,12 +31,26 @@ fineractServer:
     FINERACT_DEFAULT_TENANTDB_PORT: "3306"
   # sensitive key/value pairs to pass as environment variables to the backend pods as secrets
   extraSecretEnv: {}
+  resources:
+    requests:
+      memory: "500Mi"
+      cpu: "200m"
+    limits:
+      memory: "1Gi"
+      cpu: "500m" 
 
 fineractUI:
   replicas: 1
   image:
     name: openmf/community-app
     tag: latest
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "100m"
+      limits:
+        memory: "256Mi"
+        cpu: "200m" 
 
 # Globals will be available to subcharts
 global:
