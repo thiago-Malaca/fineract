@@ -25,7 +25,7 @@ metadata:
     app: fineract
     tier: backend
 spec:
-  replicas: {{ .Values.replicas }}
+  replicas: {{ .Values.fineractServer.replicas }}
   selector:
     matchLabels:
       app: fineract-backend
@@ -87,8 +87,8 @@ spec:
             timeoutSeconds: 10
           resources:
             requests:
-              memory: "128Mi"
-              cpu: "100m"
+              memory: "500Mi"
+              cpu: "200m"
             limits:
-              memory: "256Mi"
-              cpu: "200m" 
+              memory: "1Gi"
+              cpu: "500m" 
