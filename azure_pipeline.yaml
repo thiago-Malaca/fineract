@@ -16,58 +16,89 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  # AzureSubscription: 'AssinaturaAzure_c4971952' # Name of the Service Connection
+  AzureSubscription: 'AssinaturaAzure_c4971952' # Name of the Service Connection
   AzureContainerRegistry: 'Azure Container Registry'
   ApiName: 'fineract'
-  # ArtifactName: 'CustomerApi'
-  # ArtifactSourceFolder: $(ArtifactName)/$(ArtifactName)
-  # BuildId: $(Build.BuildId)
-  # BuildNumber: $(GitVersion.SemVer)
-  # ClusterResourceGroup: MicroserviceDemo
-  # ChartPath: '$(ArtifactName)/$(ArtifactName)/charts/$(ApiName)'
-  # HelmVersion: 3.5.0
-  # AcrClusterName: 'msfmicroserviceacr'
-  # # ContainerRegistryName: '$(AcrClusterName).azurecr.io'
-  # # RepositoryName: '$(ApiName)'
-  # AksClusterName: 'microservice-aks'
-  # ReleaseValuesFile: '$(ArtifactSourceFolder)/values.release.yaml'
+  ArtifactName: 'Fineract'
+  ArtifactSourceFolder: $(ArtifactName)/$(ArtifactName)
+  BuildId: $(Build.BuildId)
+  BuildNumber: $(GitVersion.SemVer)
+  ClusterResourceGroup: MicroserviceDemo
+  ChartPath: '$(ArtifactName)/$(ArtifactName)/charts/$(ApiName)'
+  HelmVersion: 3.5.0
+  AcrClusterName: 'msfmicroserviceacr'
+  # ContainerRegistryName: '$(AcrClusterName).azurecr.io'
+  # RepositoryName: '$(ApiName)'
+  AksClusterName: 'microservice-aks'
+  ReleaseValuesFile: '$(ArtifactSourceFolder)/values.release.yaml'
 
 name: Fineract_$(Date:yyyyMMdd)$(Rev:.r)
 
-steps:
-  - task: HelmInstaller@1
-    inputs:
-      helmVersionToInstall: latest
 
-  - script: |
-      # Lint
-      helm lint helm/fineract
-    displayName: Validate Helm chart
+stages:
+- stage: Build
+  jobs:
+  - job: Build
+    displayName: Build and push Docker image and create Helm package
+    steps:
+    - template: templates/BuildVersioning.yml
+    - template: templates/DockerBuildAndPush.yml
+      parameters:
+          buildId: $(BuildId)
+          patMicroserviceDemoNugetsFeed: $(PatMicroserviceDemoNugetsFeed)
+          # dockerRegistryServiceConnection: $(AzureContainerRegistry)
+          containerRegistry: $(AzureContainerRegistry)
+          # repository: '$(AcrClusterName).azurecr.io/$(ApiName)' # '<YourACRName>.azurecr.io/<YourRepositoryName>' # replace with your repository
+          repository: $(ApiName)
+          tag: $(BuildNumber)
+          artifactName: $(ArtifactName)
+    - template: templates/CreateHelmPackage.yml
+      parameters:
+          azureSubscription: $(AzureSubscription)
+          buildNumber: $(BuildNumber)
+          clusterResourceGroup: $(ClusterResourceGroup)
+          chartPath: $(ChartPath)
+          kubernetesCluster: $(AksClusterName)
+          releaseValuesFile: $(ReleaseValuesFile)
+          artifactStagingDirectory: $(Build.ArtifactStagingDirectory)
+          artifactName: $(ArtifactName)
+          helmVersion: $(HelmVersion)
+          sourceFolder: $(ArtifactSourceFolder)
 
-  - task: HelmDeploy@0
-    displayName: Package Helm Chart
-    inputs:
-      command: package
-      chartPath: $(System.DefaultWorkingDirectory)/helm/fineract
-      destination: $(Build.ArtifactStagingDirectory)
-      updatedependency: true
+# steps:
+#   - task: HelmInstaller@1
+#     inputs:
+#       helmVersionToInstall: latest
 
-  - task: PublishBuildArtifacts@1
-    displayName: Publish Helm chart
-    # Only publish develop branch
-    inputs:
-      PathtoPublish: "$(Build.ArtifactStagingDirectory)"
-      ArtifactName: "fineract"
-      publishLocation: "Container"
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+#   - script: |
+#       # Lint
+#       helm lint helm/fineract
+#     displayName: Validate Helm chart
 
-  - task: Docker@2
-    displayName: 'Push Docker Container'
-    inputs:
-      # dockerRegistryServiceConnection: ${{ parameters.dockerRegistryServiceConnection }}
-      containerRegistry: $(AzureContainerRegistry)
-      repository: $(ApiName)
-      command: 'push'
-      tags: |
-        latest
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+#   - task: HelmDeploy@0
+#     displayName: Package Helm Chart
+#     inputs:
+#       command: package
+#       chartPath: $(System.DefaultWorkingDirectory)/helm/fineract
+#       destination: $(Build.ArtifactStagingDirectory)
+#       updatedependency: true
+
+#   - task: PublishBuildArtifacts@1
+#     displayName: Publish Helm chart
+#     # Only publish develop branch
+#     inputs:
+#       PathtoPublish: "$(Build.ArtifactStagingDirectory)"
+#       ArtifactName: "fineract"
+#       publishLocation: "Container"
+#     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+
+#   - task: Docker@2
+#     displayName: 'Push Docker Container'
+#     inputs:
+#       # dockerRegistryServiceConnection: ${{ parameters.dockerRegistryServiceConnection }}
+#       containerRegistry: $(AzureContainerRegistry)
+#       repository: $(ApiName)
+#       command: 'push'
+#       tags: |
+#         latest
+#     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
