@@ -23,25 +23,25 @@ parameters:
   - name: kubernetesCluster
     type: string
     default:
-  - name: releaseValuesFile
-    type: string
-    default: 
+  # - name: releaseValuesFile
+  #   type: string
+  #   default: 
   - name: sourceFolder
     type: string
     default:
 
 steps:
-  - task: Tokenizer@0
-    displayName: 'Run Tokenizer'
-    inputs:
-      sourceFilesPattern: ${{ parameters.releaseValuesFile }}
+  # - task: Tokenizer@0
+  #   displayName: 'Run Tokenizer'
+  #   inputs:
+  #     sourceFilesPattern: ${{ parameters.releaseValuesFile }}
 
-  - task: CopyFiles@2
-    displayName: 'Copy Files to:${{ parameters.artifactStagingDirectory }}/${{ parameters.artifactName }}'
-    inputs:
-      SourceFolder: ${{ parameters.sourceFolder }}
-      Contents: values.release.yaml
-      TargetFolder: '${{ parameters.artifactStagingDirectory }}/${{ parameters.artifactName }}'
+  # - task: CopyFiles@2
+  #   displayName: 'Copy Files to:${{ parameters.artifactStagingDirectory }}/${{ parameters.artifactName }}'
+  #   inputs:
+  #     SourceFolder: ${{ parameters.sourceFolder }}
+  #     Contents: values.release.yaml
+  #     TargetFolder: '${{ parameters.artifactStagingDirectory }}/${{ parameters.artifactName }}'
 
   - task: HelmInstaller@0
     displayName: 'Install Helm ${{ parameters.helmVersion }}'
@@ -49,6 +49,11 @@ steps:
       helmVersion: '${{ parameters.helmVersion }}'
       checkLatestHelmVersion: false
       installKubectl: true
+
+  - script: |
+      # Lint
+      helm lint helm/fineract
+    displayName: Validate Helm chart
 
   - task: HelmDeploy@0
     displayName: 'helm package'
@@ -60,8 +65,50 @@ steps:
       chartPath: ${{ parameters.chartPath }}
       chartVersion: ${{ parameters.buildNumber }}
       destination: '${{ parameters.artifactStagingDirectory }}/${{ parameters.artifactName }}'
-      save: false      
+      save: false
+      updatedependency: true
 
-  - publish: '${{ parameters.artifactStagingDirectory }}/${{ parameters.artifactName }}'
-    artifact: '${{ parameters.artifactName }}'
-    displayName: 'Publish Artifact: ${{ parameters.artifactName }}'
+  # - publish: '${{ parameters.artifactStagingDirectory }}/${{ parameters.artifactName }}'
+  #   artifact: '${{ parameters.artifactName }}'
+  #   displayName: 'Publish Artifact: ${{ parameters.artifactName }}'
+
+
+
+
+# steps:
+#   - task: HelmInstaller@1
+#     inputs:
+#       helmVersionToInstall: latest
+
+#   - script: |
+#       # Lint
+#       helm lint helm/fineract
+#     displayName: Validate Helm chart
+
+#   - task: HelmDeploy@0
+#     displayName: Package Helm Chart
+#     inputs:
+#       command: package
+#       chartPath: $(System.DefaultWorkingDirectory)/helm/fineract
+#       destination: $(Build.ArtifactStagingDirectory)
+#       updatedependency: true
+
+  - task: PublishBuildArtifacts@1
+    displayName: Publish Helm chart
+    # Only publish develop branch
+    inputs:
+      PathtoPublish: "$(Build.ArtifactStagingDirectory)"
+      ArtifactName: "fineract"
+      publishLocation: "Container"
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+
+  - task: Docker@2
+    displayName: 'Push Docker Container'
+    inputs:
+      # dockerRegistryServiceConnection: ${{ parameters.dockerRegistryServiceConnection }}
+      containerRegistry: $(AzureContainerRegistry)
+      repository: $(ApiName)
+      command: 'push'
+      tags: |
+        latest
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))

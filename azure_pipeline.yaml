@@ -20,17 +20,18 @@ variables:
   AzureContainerRegistry: 'Azure Container Registry'
   ApiName: 'fineract'
   ArtifactName: 'Fineract'
-  ArtifactSourceFolder: $(ArtifactName)/$(ArtifactName)
+  ArtifactSourceFolder: $(ArtifactName)
   BuildId: $(Build.BuildId)
   BuildNumber: $(GitVersion.SemVer)
   ClusterResourceGroup: MicroserviceDemo
-  ChartPath: '$(ArtifactName)/$(ArtifactName)/charts/$(ApiName)'
+  # ChartPath: '$(ArtifactName)/$(ArtifactName)/charts/$(ApiName)'
+  ChartPath: $(System.DefaultWorkingDirectory)/helm/fineract
   HelmVersion: 3.5.0
   AcrClusterName: 'msfmicroserviceacr'
   # ContainerRegistryName: '$(AcrClusterName).azurecr.io'
   # RepositoryName: '$(ApiName)'
   AksClusterName: 'microservice-aks'
-  ReleaseValuesFile: '$(ArtifactSourceFolder)/values.release.yaml'
+  # ReleaseValuesFile: '../values.release.yaml'
 
 name: Fineract_$(Date:yyyyMMdd)$(Rev:.r)
 
@@ -59,7 +60,7 @@ stages:
           clusterResourceGroup: $(ClusterResourceGroup)
           chartPath: $(ChartPath)
           kubernetesCluster: $(AksClusterName)
-          releaseValuesFile: $(ReleaseValuesFile)
+          # releaseValuesFile: $(ReleaseValuesFile)
           artifactStagingDirectory: $(Build.ArtifactStagingDirectory)
           artifactName: $(ArtifactName)
           helmVersion: $(HelmVersion)
