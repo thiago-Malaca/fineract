@@ -38,8 +38,19 @@ steps:
   - task: PublishBuildArtifacts@1
     displayName: Publish Helm chart
     # Only publish develop branch
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
     inputs:
       PathtoPublish: "$(Build.ArtifactStagingDirectory)"
       ArtifactName: "fineract"
       publishLocation: "Container"
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+
+  - task: Docker@2
+    displayName: 'Push Docker Container'
+    inputs:
+      # dockerRegistryServiceConnection: ${{ parameters.dockerRegistryServiceConnection }}
+      containerRegistry: ${{ parameters.containerRegistry }}
+      repository: ${{ parameters.repository }}
+      command: 'push'
+      tags: |
+        latest
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
