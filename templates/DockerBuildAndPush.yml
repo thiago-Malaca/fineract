@@ -2,9 +2,9 @@ parameters:
   - name: buildId
     type: string
     default: 
-  - name: patMicroserviceDemoNugetsFeed
-    type: string
-    default: 
+  # - name: patMicroserviceDemoNugetsFeed
+  #   type: string
+  #   default:
   # - name: dockerRegistryServiceConnection
   #   type: string
   #   default: 
@@ -29,14 +29,15 @@ steps:
       containerRegistry: ${{ parameters.containerRegistry }}
       repository: ${{ parameters.repository }}
       command: 'build'
-      Dockerfile: '**/${{ parameters.artifactName }}/${{ parameters.artifactName }}/Dockerfile'
+      # Dockerfile: '**/${{ parameters.artifactName }}/${{ parameters.artifactName }}/Dockerfile'
+      Dockerfile: '**/Dockerfile'
       buildContext: ${{ parameters.artifactName }}
       # tags: |
       #   latest
       tags: |      
         ${{ parameters.tag }}
         latest
-      arguments: '--build-arg BuildId=${{ parameters.buildId }} --build-arg PAT=${{ parameters.patMicroserviceDemoNugetsFeed }}'
+      # arguments: '--build-arg BuildId=${{ parameters.buildId }} --build-arg PAT=${{ parameters.patMicroserviceDemoNugetsFeed }}'
   
   - pwsh: |
      $id=docker images --filter "label=test=${{ parameters.buildId }}" -q | Select-Object -First 1

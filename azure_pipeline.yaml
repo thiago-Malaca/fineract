@@ -45,7 +45,7 @@ stages:
     - template: templates/DockerBuildAndPush.yml
       parameters:
           buildId: $(BuildId)
-          patMicroserviceDemoNugetsFeed: $(PatMicroserviceDemoNugetsFeed)
+          # patMicroserviceDemoNugetsFeed: $(PatMicroserviceDemoNugetsFeed)
           # dockerRegistryServiceConnection: $(AzureContainerRegistry)
           containerRegistry: $(AzureContainerRegistry)
           # repository: '$(AcrClusterName).azurecr.io/$(ApiName)' # '<YourACRName>.azurecr.io/<YourRepositoryName>' # replace with your repository
