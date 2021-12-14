@@ -18,7 +18,7 @@ pool:
 variables:
   # AzureSubscription: 'AssinaturaAzure_c4971952' # Name of the Service Connection
   AzureContainerRegistry: 'Azure Container Registry'
-  ApiName: 'customerapi'
+  ApiName: 'fineract'
   # ArtifactName: 'CustomerApi'
   # ArtifactSourceFolder: $(ArtifactName)/$(ArtifactName)
   # BuildId: $(Build.BuildId)
