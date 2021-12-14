@@ -15,6 +15,23 @@ pr:
 pool:
   vmImage: ubuntu-latest
 
+variables:
+  # AzureSubscription: 'AssinaturaAzure_c4971952' # Name of the Service Connection
+  AzureContainerRegistry: 'Azure Container Registry'
+  ApiName: 'customerapi'
+  # ArtifactName: 'CustomerApi'
+  # ArtifactSourceFolder: $(ArtifactName)/$(ArtifactName)
+  # BuildId: $(Build.BuildId)
+  # BuildNumber: $(GitVersion.SemVer)
+  # ClusterResourceGroup: MicroserviceDemo
+  # ChartPath: '$(ArtifactName)/$(ArtifactName)/charts/$(ApiName)'
+  # HelmVersion: 3.5.0
+  # AcrClusterName: 'msfmicroserviceacr'
+  # # ContainerRegistryName: '$(AcrClusterName).azurecr.io'
+  # # RepositoryName: '$(ApiName)'
+  # AksClusterName: 'microservice-aks'
+  # ReleaseValuesFile: '$(ArtifactSourceFolder)/values.release.yaml'
+
 name: Fineract_$(Date:yyyyMMdd)$(Rev:.r)
 
 steps:
@@ -48,8 +65,8 @@ steps:
     displayName: 'Push Docker Container'
     inputs:
       # dockerRegistryServiceConnection: ${{ parameters.dockerRegistryServiceConnection }}
-      containerRegistry: ${{ parameters.containerRegistry }}
-      repository: ${{ parameters.repository }}
+      containerRegistry: $(AzureContainerRegistry)
+      repository: $(ApiName)
       command: 'push'
       tags: |
         latest
