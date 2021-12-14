@@ -12,6 +12,7 @@ resources:
       branches:
        include:
          - master
+         - develop
          - pull/*
          - refs/pull/*
 
