@@ -1,3 +1,5 @@
+#!/bin/sh
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements. See the NOTICE file
 # distributed with this work for additional information
@@ -16,21 +18,14 @@
 # under the License.
 #
 
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: fineract-server
-    tier: backend
-  name: {{ .Release.Name }}-backend
-  namespace: {{ .Release.Namespace }}
-spec:
-  ports:
-    - protocol: TCP
-      port: 8080
-      targetPort: 8080
-  selector:
-    app: fineract-backend
-    tier: backend
-    instance: {{ .Release.Name }}
-  type: {{ .Values.service.type }}
+
+set -e
+
+while ! nc -zvw3 fineract-mysql 3306 ; do
+    >&2 echo "DB Server is unavailable - sleeping"
+    sleep 5
+done
+>&2 echo "DB Server is up - executing command"
+
+java -cp "app:app/lib/*" org.apache.fineract.ServerApplication
+

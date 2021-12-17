@@ -446,3 +446,12 @@ NOTE: All commands shown above are assuming that the current working directory i
 More Information
 ============
 More details of the project can be found at <https://cwiki.apache.org/confluence/display/FINERACT>.
+
+
+
+az aks get-credentials --resource-group MicroserviceDemo --name microservice-aks
+az aks update -n microservice-aks -g MicroserviceDemo --attach-acr msfmicroserviceacr
+
+
+
+helm upgrade --namespace fineract --install --wait --create-namespace fineract helm/fineract/ --debug

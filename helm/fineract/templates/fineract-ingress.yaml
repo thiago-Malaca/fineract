@@ -1,9 +1,12 @@
 {{- if .Values.ingress.enabled -}}
+{{- $fullName := .Release.Name -}}
+{{- $namespace := .Release.Namespace -}}
+
 kind: Ingress
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 metadata:
-  name: {{ .Release.Name }}
-  namespace: {{ .Release.Namespace }}
+  name: {{ $fullName }}
+  namespace: {{ $namespace }}
 {{- with .Values.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
@@ -17,13 +20,17 @@ spec:
           - path: /fineract-provider
             pathType: Prefix
             backend:
-              serviceName: {{ .Release.Name }}-backend
-              servicePort: http
+              service:
+                name: {{ $fullName }}-backend
+                port: 
+                  number: 8080
           - path: /
             pathType: Prefix
             backend:
-              serviceName: {{ .Release.Name }}-ui
-              servicePort: 80
+              service:
+                name: {{ $fullName }}-ui
+                port: 
+                  number: 80
   {{- end }}
 {{- if .Values.ingress.tls }}
   tls:
