@@ -29,12 +29,18 @@ parameters:
   - name: releaseValuesFile
     type: string
     default: 
-  # - name: sourceFolder
-  #   type: string
-  #   default:
+  - name: workspace
+    type: string
+    default:
 
 
 steps:
+
+  - bash: ls -lha ${{ parameters.workspace }}
+    displayName: ls -lha
+
+  - bash: pwd
+    displayName: pwd
 
   - task: Tokenizer@0
     displayName: 'Run Tokenizer'
