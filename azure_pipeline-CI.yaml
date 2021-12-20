@@ -1,0 +1,30 @@
+trigger:
+  branches:
+    include:
+    - master
+    - develop
+  tags:
+    include:
+    - '*'
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  AzureContainerRegistry: 'Azure Container Registry'
+  BuildId: $(Build.BuildId)
+  ApiName: 'fineract'
+  ArtifactName: 'Fineract'
+
+stages:
+- stage: Build
+  jobs:
+  - job: Build
+    displayName: Build and push Docker image and create Helm package
+    steps:
+    - template: templates/DockerBuildAndPush.yml
+      parameters:
+          containerRegistry: $(AzureContainerRegistry)
+          repository: $(ApiName)
+          artifactName: $(ArtifactName)
+          tag: $(BuildId)
