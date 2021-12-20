@@ -47,7 +47,7 @@ steps:
     inputs:
       sourceFilesPattern: ${{ parameters.releaseValuesFile }}
 
-  - bash: cat
+  - bash: cat ${{ parameters.releaseValuesFile }}
     displayName: cat ${{ parameters.releaseValuesFile }}
 
   - task: CopyFiles@2
