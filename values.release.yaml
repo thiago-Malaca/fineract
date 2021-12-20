@@ -1,42 +1,47 @@
-image:
-  repository: __Repository__
-  tag: __BuildNumber__
+fineractServer:
+  replicas: 1
+  image:
+    name: __AzureACRName__.azurecr.io/fineract
 
-secrets:
-  connectionstrings:
-    ConnectionStrings__CustomerDatabase: __ConnectionString__
-    AzureServiceBus__ConnectionString: __AzureServiceBusConnectionString__
+# image:
+#   repository: __Repository__
+#   tag: __BuildNumber__
 
-probes:
-  enabled: true
+# secrets:
+#   connectionstrings:
+#     ConnectionStrings__CustomerDatabase: __ConnectionString__
+#     AzureServiceBus__ConnectionString: __AzureServiceBusConnectionString__
 
-imagePullSecrets:
-  - name: acr-secret
+# probes:
+#   enabled: true
 
-#service:
-#  type: ClusterIP
+# imagePullSecrets:
+#   - name: acr-secret
+
+# #service:
+# #  type: ClusterIP
   
-ingress:
-  enabled: __IngressEnabled__
-  annotations: 
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/use-regex: "true"
-    cert-manager.io/cluster-issuer: letsencrypt
-  namespace: __K8sNamespace__
-  path: /  
-  pathType: Prefix
-  hosts:
-    - __URL__
-  tls:
-    - secretName: __TlsSecretName__
-      hosts:
-        - __URL__
+# ingress:
+#   enabled: __IngressEnabled__
+#   annotations: 
+#     kubernetes.io/ingress.class: nginx
+#     nginx.ingress.kubernetes.io/use-regex: "true"
+#     cert-manager.io/cluster-issuer: letsencrypt
+#   namespace: __K8sNamespace__
+#   path: /  
+#   pathType: Prefix
+#   hosts:
+#     - __URL__
+#   tls:
+#     - secretName: __TlsSecretName__
+#       hosts:
+#         - __URL__
 
-envvariables:
-  TenantId: __TenantId__
-  useAadAuthentication: __UseAadAuthentication__
+# envvariables:
+#   TenantId: __TenantId__
+#   useAadAuthentication: __UseAadAuthentication__
 
-aadAuthentication:
-  managedIdentityId: __ManagedIdentityId__
-  managedIdentityClientId: __ManagedIdentityClientId__  
-  managedIdentityName: __Managedidentity-aks__
+# aadAuthentication:
+#   managedIdentityId: __ManagedIdentityId__
+#   managedIdentityClientId: __ManagedIdentityClientId__  
+#   managedIdentityName: __Managedidentity-aks__

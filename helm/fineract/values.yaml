@@ -20,7 +20,7 @@
 fineractServer:
   replicas: 1
   image:
-    name: mateussfacr.azurecr.io/fineract
+    name: fineract
     tag: latest
   # key/value pairs to pass as environment variables to the backend pods
   # extraEnv:

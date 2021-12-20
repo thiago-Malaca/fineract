@@ -36,6 +36,19 @@ parameters:
 
 
 steps:
+
+  - task: Tokenizer@0
+    displayName: 'Run Tokenizer'
+    inputs:
+      sourceFilesPattern: ${{ parameters.releaseValuesFile }}
+
+  - task: CopyFiles@2
+    displayName: 'Copy Files to:${{ parameters.artifactStagingDirectory }}/${{ parameters.artifactName }}'
+    inputs:
+      SourceFolder: ${{ parameters.releaseValuesFile }}
+      Contents: values.release.yaml
+      TargetFolder: '${{ parameters.artifactStagingDirectory }}/${{ parameters.artifactName }}'
+
   - task: HelmInstaller@0
     displayName: Install Helm
     inputs:
