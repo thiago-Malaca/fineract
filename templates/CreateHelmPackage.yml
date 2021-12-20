@@ -53,8 +53,7 @@ steps:
   - task: CopyFiles@2
     displayName: 'Copy Files to:${{ parameters.artifactStagingDirectory }}/${{ parameters.artifactName }}'
     inputs:
-      SourceFolder: ${{ parameters.releaseValuesFile }}
-      Contents: values.release.yaml
+      Contents: ${{ parameters.releaseValuesFile }}
       TargetFolder: '${{ parameters.artifactStagingDirectory }}/${{ parameters.artifactName }}'
 
   - bash: ls -lha '${{ parameters.artifactStagingDirectory }}'
