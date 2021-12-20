@@ -21,26 +21,26 @@ variables:
   ClusterResourceGroup: MSF-AKS-Nao-Produtivo-RG
   AksClusterName: msf-aks
   HelmVersion: 3.5.0
-  ChartPackage: '$(Pipeline.Workspace)/fineract/fineract-$(resources.pipeline.CustomerApiBuild.runname).tgz' 
+  ChartPackage: '$(Pipeline.Workspace)/fineract/fineract-$(resources.pipeline.fineractBuild.runname).tgz' 
   ReleaseValuesFile: '$(Pipeline.Workspace)/fineract/values.release.yaml' 
   ApiName: 'fineract'
 
 stages:
 - stage: Dev     
-  # condition: startsWith(variables['resources.pipeline.CustomerApiBuild.sourcebranch'], 'refs/heads/master')
+  # condition: startsWith(variables['resources.pipeline.fineractBuild.sourcebranch'], 'refs/heads/master')
   variables:
     DeploymentEnvironment: 'dev'
     K8sNamespace: '$(ApiName)-$(DeploymentEnvironment)'
     URL: $(DeploymentEnvironment).$(SubDomain)
   jobs:
-  - deployment: Web_Test
-    displayName: 'Deploy CustomerApi to the customerapi-test environment'
-    environment: customerapi-test
+  - deployment: Web_Dev
+    displayName: 'Deploy fineract to the fineract-dev environment'
+    environment: fineract-dev
     strategy:
       runOnce:
         deploy:
           steps:
-          - download: CustomerApiBuild
+          - download: fineractBuild
             artifact: $(ArtifactName)
           - template: templates/DeployHelmPackage.yml
             parameters:
