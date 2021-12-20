@@ -13,7 +13,7 @@ pool:
 variables:
   AzureContainerRegistry: 'Azure Container Registry'
   ApiName: 'fineract'
-  BuildId: $(Build.BuildId)
+  BuildNumber: $(Build.BuildNumber)
 
 stages:
 - stage: Build
@@ -25,4 +25,4 @@ stages:
       parameters:
           containerRegistry: $(AzureContainerRegistry)
           repository: $(ApiName)
-          tag: $(BuildId)
+          tag: $(BuildNumber)
