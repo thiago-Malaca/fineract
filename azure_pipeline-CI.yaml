@@ -22,8 +22,6 @@ variables:
   AksClusterName: msf-aks
   ChartPath: helm/fineract
   ReleaseValuesFile: '$(Build.SourcesDirectory)/values.release.yaml'
-  Workspace: $(Build.SourcesDirectory)
-  # AzureACRName: $(AzureACRName)
 
 stages:
 - stage: Build
@@ -49,5 +47,3 @@ stages:
           artifactStagingDirectory: $(Build.ArtifactStagingDirectory)
           artifactName: $(ApiName)
           releaseValuesFile: $(ReleaseValuesFile)
-          # sourceFolder: $(ArtifactSourceFolder)
-          workspace: $(Workspace)
