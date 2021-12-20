@@ -23,8 +23,22 @@ parameters:
   - name: releaseValuesFile
     type: string
     default: 
+  - name: workspace
+    type: string
+    default: 
+    
 
 steps:
+
+  - bash: pwd ${{ parameters.workspace }}
+    displayName: pwd ${{ parameters.workspace }}
+
+  - bash: ls -lha ${{ parameters.workspace }}
+    displayName: ls -lha ${{ parameters.workspace }}
+
+  - bash: ls -lha ${{ parameters.workspace }}\fineract
+    displayName: ls -lha ${{ parameters.workspace }}\fineract
+
   - task: Tokenizer@0
     displayName: 'Run Tokenizer'
     inputs:

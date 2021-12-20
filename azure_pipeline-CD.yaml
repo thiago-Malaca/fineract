@@ -24,6 +24,7 @@ variables:
   ChartPackage: '$(Pipeline.Workspace)/fineract/fineract-$(resources.pipeline.fineractBuild.runname).tgz' 
   ReleaseValuesFile: '$(Pipeline.Workspace)/fineract/values.release.yaml' 
   ApiName: 'fineract'
+  Workspace: $(Pipeline.Workspace)
 
 stages:
 - stage: Dev     
@@ -52,3 +53,5 @@ stages:
               chartPackage: '$(ChartPackage)'              
               releaseValuesFile: '$(ReleaseValuesFile)' 
               apiName: $(ApiName)
+              workspace: $(Workspace)
+              
