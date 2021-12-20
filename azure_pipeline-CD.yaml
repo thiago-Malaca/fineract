@@ -3,7 +3,7 @@ trigger: none
 
 resources:
   pipelines:
-   - pipeline: fineract-CD
+   - pipeline: fineractBuild
      source: fineract-CI
      trigger:
       branches:
