@@ -41,7 +41,7 @@ stages:
         deploy:
           steps:
           - download: fineractBuild
-            artifact: $(ArtifactName)
+            artifact: $(ApiName)
           - template: templates/DeployHelmPackage.yml
             parameters:
               azureSubscription: '$(AzureSubscription)'
