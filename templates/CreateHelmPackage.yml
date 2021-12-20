@@ -57,8 +57,8 @@ steps:
       Contents: values.release.yaml
       TargetFolder: '${{ parameters.artifactStagingDirectory }}/${{ parameters.artifactName }}'
 
-  - bash: ls -lha '${{ parameters.artifactStagingDirectory }}/${{ parameters.artifactName }}'
-    displayName: ls -lha
+  - bash: ls -lha '${{ parameters.artifactStagingDirectory }}'
+    displayName: ls -lha '${{ parameters.artifactStagingDirectory }}/${{ parameters.artifactName }}'
 
   - task: HelmInstaller@0
     displayName: Install Helm
