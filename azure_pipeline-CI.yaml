@@ -19,7 +19,7 @@ variables:
   KubectlVersion: '1.21.2'
   ClusterResourceGroup: MSF-AKS-Nao-Produtivo-RG
   AksClusterName: msf-aks
-  ChartPath: '$(ApiName)/charts/$(ApiName)'
+  ChartPath: helm/fineract
 
 stages:
 - stage: Build
