@@ -1,0 +1,74 @@
+parameters:
+  - name: azureSubscription
+    type: string
+    default:
+  - name: clusterResourceGroup
+    type: string
+    default:
+  - name: kubernetesCluster
+    type: string
+    default:
+  - name: resourceGroupLocation
+    type: string
+    default:
+  # - name: helmVersion
+  #   type: string
+  #   default: 
+  # - name: kubectlVersion
+  #   type: string
+  #   default: 
+  # - name: chartPath
+  #   type: string
+  #   default:
+  # - name: buildNumber
+  #   type: string
+  #   default:
+  # - name: artifactStagingDirectory
+  #   type: string
+  #   default:   
+  # - name: artifactName
+  #   type: string
+  #   default: 
+  # - name: releaseValuesFile
+  #   type: string
+  #   default:
+
+steps:
+  - task: AzureCLI@2
+    displayName: "Get Nginx Ingress public IP"
+    inputs:
+      azureSubscription: '$(azureSubscription)'
+      scriptType: 'pscore'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+        $publicIpName = az network public-ip list --query "[?tags.service=='ingress-basic/ingress-nginx-controller'].name" -o tsv        
+        $ingressIp = az network public-ip show -g MC_${{ parameters.clusterResourceGroup }}_${{ parameters.kubernetesCluster }}_${{ parameters.resourceGroupLocation }} -n $publicIpName --query ipAddress
+        Write-Host "##vso[task.setvariable variable=IngressIp;]$ingressIp"
+
+  - script: echo $(IngressIp)
+
+  # - task: AzureCLI@2
+  #   displayName: "Delete existing DND Records"
+  #   inputs:
+  #     azureSubscription: '$(AzureServiceConnectionPayAsYouGo)'
+  #     scriptType: 'pscore'
+  #     scriptLocation: 'inlineScript'
+  #     inlineScript: |
+  #       ForEach ($dnsRecord in $(DnsRecords)) {
+  #         $ipAddress = az network dns record-set a show -g $(ResourceGroupNameDNS) -z $(DnsZoneName) --name $dnsRecord -o json --query aRecords[0].ipv4Address
+  #         if ($ipAddress)
+  #         {
+  #           az network dns record-set a remove-record -g $(ResourceGroupNameDNS) -z $(DnsZoneName) --record-set-name $dnsRecord --ipv4-address $ipAddress
+  #         }
+  #       }
+
+  # - task: AzureCLI@2
+  #   displayName: "Set DNS A records"
+  #   inputs:
+  #     azureSubscription: '$(AzureServiceConnectionPayAsYouGo)'
+  #     scriptType: 'pscore'
+  #     scriptLocation: 'inlineScript'
+  #     inlineScript: |
+  #       ForEach ($dnsRecord in $(DnsRecords)) {
+  #         az network dns record-set a add-record -g $(ResourceGroupNameDNS) -z $(DnsZoneName) -n $dnsRecord -a $(IngressIp) --ttl 300
+  #       }        

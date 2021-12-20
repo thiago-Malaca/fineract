@@ -24,6 +24,7 @@ variables:
   ChartPackage: '$(Pipeline.Workspace)/fineractBuild/fineract/fineract-$(resources.pipeline.fineractBuild.runname).tgz' 
   ReleaseValuesFile: '$(Pipeline.Workspace)/fineractBuild/fineract/values.release.yaml' 
   ApiName: 'fineract'
+  ResourceGroupLocation: northcentralus
 
 stages:
 - stage: Dev     
@@ -42,6 +43,17 @@ stages:
           steps:
           - download: fineractBuild
             artifact: $(ApiName)
+          - template: templates/SetDnsRecords.yml
+            parameters:
+              azureSubscription: '$(AzureSubscription)'
+              clusterResourceGroup: '$(ClusterResourceGroup)'
+              kubernetesCluster: $(AksClusterName)
+              resourceGroupLocation: $(ResourceGroupLocation)
+              # helmVersion: $(HelmVersion)
+              # k8sNamespace: $(K8sNamespace)
+              # chartPackage: '$(ChartPackage)'              
+              # releaseValuesFile: '$(ReleaseValuesFile)' 
+              # apiName: $(ApiName)
           - template: templates/DeployHelmPackage.yml
             parameters:
               azureSubscription: '$(AzureSubscription)'
