@@ -12,14 +12,13 @@ parameters:
 steps:
   - task: Docker@2
     displayName: 'Build Docker Container'
-    workingDirectory: helm/fineract/docker
     inputs:
       # dockerRegistryServiceConnection: ${{ parameters.dockerRegistryServiceConnection }}
       containerRegistry: ${{ parameters.containerRegistry }}
       repository: ${{ parameters.repository }}
       command: 'build'
       # Dockerfile: '**/${{ parameters.artifactName }}/${{ parameters.artifactName }}/Dockerfile'
-      Dockerfile: './Dockerfile'
+      Dockerfile: './helm/fineract/docker/Dockerfile'
       # buildContext: ${{ parameters.artifactName }}
       # tags: |
       #   latest
