@@ -20,8 +20,8 @@ variables:
   ClusterResourceGroup: MSF-AKS-Nao-Produtivo-RG
   AksClusterName: msf-aks
   ChartPath: helm/fineract
-  ReleaseValuesFile: '$(Pipeline.Workspace)/values.release.yaml'
-  Workspace: $(Pipeline.Workspace)
+  ReleaseValuesFile: '$(Build.SourcesDirectory)/values.release.yaml'
+  Workspace: $(Build.SourcesDirectory)
   # AzureACRName: $(AzureACRName)
 
 stages:
