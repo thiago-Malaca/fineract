@@ -30,6 +30,9 @@ steps:
     inputs:
       sourceFilesPattern: ${{ parameters.releaseValuesFile }}
 
+  - bash: cat ${{ parameters.releaseValuesFile }}
+    displayName: cat ${{ parameters.releaseValuesFile }}
+
   - task: HelmInstaller@0
     displayName: 'Install Helm ${{ parameters.helmVersion }}'
     inputs:
