@@ -93,8 +93,8 @@ ingress:
   path: /
   pathType: Prefix
   hosts:
-    - dev.core.mateussf.tk
+    - your.sub.domain.com
   tls:
     - secretName: fineract-tls
       hosts:
-        - dev.core.mateussf.tk
+        - your.sub.domain.com

@@ -1,23 +1,23 @@
 parameters:
-  - name: apiName
-    type: string
-    default: 
   - name: azureSubscription
-    type: string
-    default:
-  - name: clusterResourceGroup
-    type: string
-    default:
-  - name: chartPackage
     type: string
     default:
   - name: helmVersion
     type: string
     default:
-  - name: k8sNamespace
+  - name: apiName
+    type: string
+    default: 
+  - name: clusterResourceGroup
     type: string
     default:
   - name: kubernetesCluster
+    type: string
+    default:
+  - name: k8sNamespace
+    type: string
+    default:
+  - name: chartPackage
     type: string
     default:
   - name: releaseValuesFile
@@ -40,7 +40,7 @@ steps:
   - task: HelmDeploy@0
     displayName: 'Helm upgrade release'
     inputs:
-      connectionType: 'Azure Resource Manager'
+      # connectionType: 'Azure Resource Manager'
       azureSubscription: ${{ parameters.azureSubscription }}
       azureResourceGroup: ${{ parameters.clusterResourceGroup }}
       kubernetesCluster: ${{ parameters.kubernetesCluster }}

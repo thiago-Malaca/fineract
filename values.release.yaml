@@ -1,7 +1,15 @@
 fineractServer:
-  replicas: 1
   image:
     name: __AzureACRName__.azurecr.io/fineract
+
+ingress:
+  hosts:
+    - __URL__
+  tls:
+    - secretName: fineract-tls
+      hosts:
+        - __URL__
+
 
 # image:
 #   repository: __Repository__
