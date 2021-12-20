@@ -36,8 +36,8 @@ steps:
   - bash: ls -lha ${{ parameters.workspace }}
     displayName: ls -lha ${{ parameters.workspace }}
 
-  - bash: ls -lha ${{ parameters.workspace }}\fineract
-    displayName: ls -lha ${{ parameters.workspace }}\fineract
+  - bash: ls -lha ${{ parameters.workspace }}/fineract
+    displayName: ls -lha ${{ parameters.workspace }}/fineract
 
   - task: Tokenizer@0
     displayName: 'Run Tokenizer'
