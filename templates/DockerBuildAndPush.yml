@@ -8,6 +8,9 @@ parameters:
   - name: tag
     type: string
     default: 
+  - name: dockerfileBackend
+    type: string
+    default: 
 
 steps:
   - task: Docker@2
@@ -18,7 +21,7 @@ steps:
       repository: ${{ parameters.repository }}
       command: 'build'
       # Dockerfile: '**/${{ parameters.artifactName }}/${{ parameters.artifactName }}/Dockerfile'
-      Dockerfile: './helm/fineract/docker/Dockerfile'
+      Dockerfile: ${{ parameters.dockerfileBackend }}
       # buildContext: ${{ parameters.artifactName }}
       # tags: |
       #   latest

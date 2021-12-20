@@ -15,6 +15,7 @@ variables:
   AzureContainerRegistry: 'Azure Container Registry'
   ApiName: 'fineract'
   BuildNumber: $(Build.BuildNumber)
+  DockerfileBackend: '$(Build.SourcesDirectory)/extra/Dockerfile'
   HelmVersion: '3.5.0'
   KubectlVersion: '1.21.2'
   ClusterResourceGroup: MSF-AKS-Nao-Produtivo-RG
@@ -33,6 +34,7 @@ stages:
     - template: templates/DockerBuildAndPush.yml
       parameters:
           containerRegistry: $(AzureContainerRegistry)
+          dockerfileBackend: $(DockerfileBackend)
           repository: $(ApiName)
           tag: $(BuildNumber)
     - template: templates/CreateHelmPackage.yml

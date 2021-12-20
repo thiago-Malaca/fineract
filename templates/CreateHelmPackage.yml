@@ -47,12 +47,18 @@ steps:
     inputs:
       sourceFilesPattern: ${{ parameters.releaseValuesFile }}
 
+  - bash: cat
+    displayName: cat ${{ parameters.releaseValuesFile }}
+
   - task: CopyFiles@2
     displayName: 'Copy Files to:${{ parameters.artifactStagingDirectory }}/${{ parameters.artifactName }}'
     inputs:
       SourceFolder: ${{ parameters.releaseValuesFile }}
       Contents: values.release.yaml
       TargetFolder: '${{ parameters.artifactStagingDirectory }}/${{ parameters.artifactName }}'
+
+  - bash: ls -lha '${{ parameters.artifactStagingDirectory }}/${{ parameters.artifactName }}'
+    displayName: ls -lha
 
   - task: HelmInstaller@0
     displayName: Install Helm
@@ -63,11 +69,11 @@ steps:
       kubectlVersion: '$(kubectlVersion)'
       checkLatestKubectl: false
 
+  ####
   - script: |
       # Lint
       helm lint helm/fineract
     displayName: Validate Helm chart
-
 
   - task: HelmDeploy@0
     displayName: 'helm package'
@@ -82,6 +88,12 @@ steps:
       save: false
       updatedependency: true
 
+  - bash: ls -lha '${{ parameters.artifactStagingDirectory }}/${{ parameters.artifactName }}'
+    displayName: ls -lha
+
   - publish: '${{ parameters.artifactStagingDirectory }}/${{ parameters.artifactName }}'
     artifact: '${{ parameters.artifactName }}'
     displayName: 'Publish Artifact: ${{ parameters.artifactName }}'
+
+  - bash: ls -lha '${{ parameters.artifactStagingDirectory }}/${{ parameters.artifactName }}'
+    displayName: ls -lha
