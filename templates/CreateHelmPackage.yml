@@ -62,6 +62,7 @@ steps:
       chartVersion: ${{ parameters.buildNumber }}
       destination: '${{ parameters.artifactStagingDirectory }}/${{ parameters.artifactName }}'
       save: false
+      updatedependency: true
 
   - publish: '${{ parameters.artifactStagingDirectory }}/${{ parameters.artifactName }}'
     artifact: '${{ parameters.artifactName }}'
