@@ -11,9 +11,15 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
+  AzureSubscription: 'Azure Service Connection'
   AzureContainerRegistry: 'Azure Container Registry'
   ApiName: 'fineract'
   BuildNumber: $(Build.BuildNumber)
+  HelmVersion: '3.5.0'
+  KubectlVersion: '1.21.2'
+  ClusterResourceGroup: MSF-AKS-Nao-Produtivo-RG
+  AksClusterName: msf-aks
+  ChartPath: '$(ApiName)/charts/$(ApiName)'
 
 stages:
 - stage: Build
@@ -26,3 +32,16 @@ stages:
           containerRegistry: $(AzureContainerRegistry)
           repository: $(ApiName)
           tag: $(BuildNumber)
+    - template: templates/CreateHelmPackage.yml
+      parameters:
+          azureSubscription: $(AzureSubscription)
+          helmVersion: $(HelmVersion)
+          kubectlVersion: $(KubectlVersion)
+          clusterResourceGroup: $(ClusterResourceGroup)
+          kubernetesCluster: $(AksClusterName)
+          chartPath: $(ChartPath)
+          buildNumber: $(BuildNumber)
+          artifactStagingDirectory: $(Build.ArtifactStagingDirectory)
+          artifactName: $(ApiName)
+          # # releaseValuesFile: $(ReleaseValuesFile)
+          # sourceFolder: $(ArtifactSourceFolder)
