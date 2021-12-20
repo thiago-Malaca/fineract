@@ -11,12 +11,12 @@ parameters:
   - name: resourceGroupLocation
     type: string
     default:
-  # - name: helmVersion
-  #   type: string
-  #   default: 
-  # - name: kubectlVersion
-  #   type: string
-  #   default: 
+  - name: dnsZoneName
+    type: string
+    default: 
+  - name: resourceGroupNameDNS
+    type: string
+    default: 
   # - name: chartPath
   #   type: string
   #   default:
@@ -50,25 +50,23 @@ steps:
   # - task: AzureCLI@2
   #   displayName: "Delete existing DND Records"
   #   inputs:
-  #     azureSubscription: '$(AzureServiceConnectionPayAsYouGo)'
+  #     azureSubscription: '$(azureSubscription)'
   #     scriptType: 'pscore'
   #     scriptLocation: 'inlineScript'
   #     inlineScript: |
   #       ForEach ($dnsRecord in $(DnsRecords)) {
-  #         $ipAddress = az network dns record-set a show -g $(ResourceGroupNameDNS) -z $(DnsZoneName) --name $dnsRecord -o json --query aRecords[0].ipv4Address
+  #         $ipAddress = az network dns record-set a show -g $(resourceGroupNameDNS) -z $(dnsZoneName) --name *.$(subDomain) -o json --query aRecords[0].ipv4Address
   #         if ($ipAddress)
   #         {
-  #           az network dns record-set a remove-record -g $(ResourceGroupNameDNS) -z $(DnsZoneName) --record-set-name $dnsRecord --ipv4-address $ipAddress
+  #           az network dns record-set a remove-record -g $(resourceGroupNameDNS) -z $(dnsZoneName) --record-set-name $dnsRecord --ipv4-address $ipAddress
   #         }
   #       }
 
-  # - task: AzureCLI@2
-  #   displayName: "Set DNS A records"
-  #   inputs:
-  #     azureSubscription: '$(AzureServiceConnectionPayAsYouGo)'
-  #     scriptType: 'pscore'
-  #     scriptLocation: 'inlineScript'
-  #     inlineScript: |
-  #       ForEach ($dnsRecord in $(DnsRecords)) {
-  #         az network dns record-set a add-record -g $(ResourceGroupNameDNS) -z $(DnsZoneName) -n $dnsRecord -a $(IngressIp) --ttl 300
-  #       }        
+  - task: AzureCLI@2
+    displayName: "Set DNS A record"
+    inputs:
+      azureSubscription: '$(azureSubscription)'
+      scriptType: 'pscore'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+          az network dns record-set a add-record -g $(resourceGroupNameDNS) -z $(dnsZoneName) -n *.$(subDomain) -a $(IngressIp) --ttl 300

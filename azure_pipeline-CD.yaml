@@ -32,7 +32,7 @@ stages:
   variables:
     DeploymentEnvironment: 'dev'
     K8sNamespace: '$(ApiName)-$(DeploymentEnvironment)'
-    URL: $(DeploymentEnvironment).$(SubDomain)
+    URL: $(DeploymentEnvironment).$(SubDomain).$(DnsZoneName)
   jobs:
   - deployment: Web_Dev
     displayName: 'Deploy fineract to the fineract-dev environment'
@@ -43,17 +43,16 @@ stages:
           steps:
           - download: fineractBuild
             artifact: $(ApiName)
+
           - template: templates/SetDnsRecords.yml
             parameters:
               azureSubscription: '$(AzureSubscription)'
               clusterResourceGroup: '$(ClusterResourceGroup)'
               kubernetesCluster: $(AksClusterName)
               resourceGroupLocation: $(ResourceGroupLocation)
-              # helmVersion: $(HelmVersion)
-              # k8sNamespace: $(K8sNamespace)
-              # chartPackage: '$(ChartPackage)'              
-              # releaseValuesFile: '$(ReleaseValuesFile)' 
-              # apiName: $(ApiName)
+              dnsZoneName: $(DnsZoneName)
+              resourceGroupNameDNS: $(ResourceGroupNameDNS)
+
           - template: templates/DeployHelmPackage.yml
             parameters:
               azureSubscription: '$(AzureSubscription)'
