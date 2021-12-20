@@ -26,10 +26,9 @@ parameters:
   - name: artifactName
     type: string
     default: 
-
-  # # - name: releaseValuesFile
-  # #   type: string
-  # #   default: 
+  - name: releaseValuesFile
+    type: string
+    default: 
   # - name: sourceFolder
   #   type: string
   #   default:
