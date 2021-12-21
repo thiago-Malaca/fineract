@@ -47,20 +47,18 @@ steps:
 
   - script: echo $(IngressIp)
 
-  # - task: AzureCLI@2
-  #   displayName: "Delete existing DND Records"
-  #   inputs:
-  #     azureSubscription: '$(azureSubscription)'
-  #     scriptType: 'pscore'
-  #     scriptLocation: 'inlineScript'
-  #     inlineScript: |
-  #       ForEach ($dnsRecord in $(DnsRecords)) {
-  #         $ipAddress = az network dns record-set a show -g $(resourceGroupNameDNS) -z $(dnsZoneName) --name *.$(subDomain) -o json --query aRecords[0].ipv4Address
-  #         if ($ipAddress)
-  #         {
-  #           az network dns record-set a remove-record -g $(resourceGroupNameDNS) -z $(dnsZoneName) --record-set-name $dnsRecord --ipv4-address $ipAddress
-  #         }
-  #       }
+  - task: AzureCLI@2
+    displayName: "Delete existing DND Records"
+    inputs:
+      azureSubscription: '$(azureSubscription)'
+      scriptType: 'pscore'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+        $ipAddress = az network dns record-set a show -g $(resourceGroupNameDNS) -z $(dnsZoneName) --name *.$(subDomain) -o json --query aRecords[0].ipv4Address
+        if ($ipAddress)
+        {
+          az network dns record-set a remove-record -g $(resourceGroupNameDNS) -z $(dnsZoneName) --record-set-name *.$(subDomain) --ipv4-address $ipAddress
+        }
 
   - task: AzureCLI@2
     displayName: "Set DNS A record"

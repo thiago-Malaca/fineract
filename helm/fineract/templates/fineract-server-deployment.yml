@@ -57,10 +57,11 @@ spec:
                 name: {{ .Release.Name | quote }}
           env:
             - name: FINERACT_DEFAULT_TENANTDB_HOSTNAME
-              value: fineract-mysql
-              # value: {{ include "mysql_host" . }}
+              value: {{ include "mysql_host" . }}
+              # value: fineract-mysql
             - name: fineract_tenants_url
-              value: jdbc:mysql:thin://fineract-mysql:3306/fineract_tenants
+              value: jdbc:mysql:thin://{{ include "mysql_host" . }}:3306/fineract_tenants
+              # value: jdbc:mysql:thin://fineract-mysql:3306/fineract_tenants
               # value: {{ include "mysql_url" . }}
             - name: fineract_tenants_uid
               value: {{ include "mysql_user" . }}

@@ -21,11 +21,11 @@
 
 set -e
 
-while ! nc -zvw3 fineract-mysql 3306 ; do
-    >&2 echo "DB Server is unavailable - sleeping"
+while ! nc -zvw3 $FINERACT_DEFAULT_TENANTDB_HOSTNAME 3306 ; do
+    >&2 echo "DB Server ($FINERACT_DEFAULT_TENANTDB_HOSTNAME) is unavailable - sleeping"
     sleep 5
 done
->&2 echo "DB Server is up - executing command"
+>&2 echo "DB Server ($FINERACT_DEFAULT_TENANTDB_HOSTNAME) is up - executing command"
 
 java -cp "app:app/lib/*" org.apache.fineract.ServerApplication
 

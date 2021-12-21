@@ -23,7 +23,7 @@ variables:
   HelmVersion: 3.5.0
   ChartPackage: '$(Pipeline.Workspace)/fineractBuild/fineract/fineract-$(resources.pipeline.fineractBuild.runname).tgz' 
   ReleaseValuesFile: '$(Pipeline.Workspace)/fineractBuild/fineract/values.release.yaml' 
-  ApiName: 'fineract'
+  ApiName: 'core'
   ResourceGroupLocation: northcentralus
 
 stages:
