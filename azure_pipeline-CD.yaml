@@ -32,6 +32,7 @@ stages:
   jobs:
   - deployment: DNS
     displayName: 'Set DNS Records - *.$(SubDomain).$(DnsZoneName)'
+    environment: fineract-global
     strategy:
       runOnce:
         deploy:
@@ -54,9 +55,9 @@ stages:
     K8sNamespace: '$(ApiName)-$(DeploymentEnvironment)'
     URL: $(DeploymentEnvironment).$(SubDomain).$(DnsZoneName)
   jobs:
-  - deployment: Web_$(DeploymentEnvironment)
+  - deployment: Web_dev
     displayName: 'Deploy fineract to the fineract-$(DeploymentEnvironment) environment'
-    environment: fineract-$(DeploymentEnvironment)
+    environment: fineract-dev
     strategy:
       runOnce:
         deploy:
@@ -86,9 +87,9 @@ stages:
     K8sNamespace: '$(ApiName)-$(DeploymentEnvironment)'
     URL: $(DeploymentEnvironment).$(SubDomain).$(DnsZoneName)
   jobs:
-  - deployment: Web_$(DeploymentEnvironment)
+  - deployment: Web_test
     displayName: 'Deploy fineract to the fineract-$(DeploymentEnvironment) environment'
-    environment: fineract-$(DeploymentEnvironment)
+    environment: fineract-test
     strategy:
       runOnce:
         deploy:
