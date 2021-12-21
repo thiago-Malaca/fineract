@@ -18,8 +18,6 @@ pool:
 
 variables:
   AzureSubscription: 'Azure Service Connection'
-  ClusterResourceGroup: MSF-AKS-Nao-Produtivo-RG
-  AksClusterName: msf-aks
   HelmVersion: 3.5.0
   ApiName: 'fineract'
   ChartPackage: '$(Pipeline.Workspace)/fineractBuild/$(ApiName)/fineract-$(resources.pipeline.fineractBuild.runname).tgz' 
@@ -31,7 +29,7 @@ stages:
   # condition: startsWith(variables['resources.pipeline.fineractBuild.sourcebranch'], 'refs/heads/master')
   jobs:
   - deployment: DNS
-    displayName: 'Set DNS Records - *.$(SubDomain).$(DnsZoneName)'
+    displayName: 'Set DNS Records'
     environment: fineract-global
     strategy:
       runOnce:
@@ -41,6 +39,7 @@ stages:
             parameters:
               azureSubscription: '$(AzureSubscription)'
               clusterResourceGroup: '$(ClusterResourceGroup)'
+              kubernetesCluster: $(AksClusterName)
               resourceGroupNameDNS: $(ResourceGroupNameDNS)
               resourceGroupLocation: $(ResourceGroupLocation)
               dnsZoneName: $(DnsZoneName)
@@ -56,7 +55,7 @@ stages:
     URL: $(DeploymentEnvironment).$(SubDomain).$(DnsZoneName)
   jobs:
   - deployment: Web_dev
-    displayName: 'Deploy fineract to the fineract-$(DeploymentEnvironment) environment'
+    displayName: 'Deploy fineract to the fineract environment'
     environment: fineract-dev
     strategy:
       runOnce:
@@ -88,7 +87,7 @@ stages:
     URL: $(DeploymentEnvironment).$(SubDomain).$(DnsZoneName)
   jobs:
   - deployment: Web_test
-    displayName: 'Deploy fineract to the fineract-$(DeploymentEnvironment) environment'
+    displayName: 'Deploy fineract to the fineract environment'
     environment: fineract-test
     strategy:
       runOnce:
