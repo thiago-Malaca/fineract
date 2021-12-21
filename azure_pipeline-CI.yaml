@@ -13,7 +13,7 @@ pool:
 variables:
   AzureSubscription: 'Azure Service Connection'
   AzureContainerRegistry: 'Azure Container Registry'
-  ApiName: 'fineract'
+  ApiName: 'core'
   BuildNumber: $(Build.BuildNumber)
   DockerfileBackend: '$(Build.SourcesDirectory)/extra/Dockerfile'
   HelmVersion: '3.5.0'
