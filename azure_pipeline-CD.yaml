@@ -21,7 +21,7 @@ variables:
   ClusterResourceGroup: MSF-AKS-Nao-Produtivo-RG
   AksClusterName: msf-aks
   HelmVersion: 3.5.0
-  ApiName: 'core'
+  ApiName: 'fineract'
   ChartPackage: '$(Pipeline.Workspace)/fineractBuild/$(ApiName)/fineract-$(resources.pipeline.fineractBuild.runname).tgz' 
   ReleaseValuesFile: '$(Pipeline.Workspace)/fineractBuild/$(ApiName)/values.release.yaml' 
   ResourceGroupLocation: northcentralus
