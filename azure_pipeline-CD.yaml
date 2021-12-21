@@ -27,31 +27,41 @@ variables:
   ResourceGroupLocation: northcentralus
 
 stages:
-- stage: Dev     
+- stage: DNS
+  # condition: startsWith(variables['resources.pipeline.fineractBuild.sourcebranch'], 'refs/heads/master')
+  jobs:
+  - deployment: DNS
+    displayName: 'Set DNS Records - *.$(SubDomain).$(DnsZoneName)'
+    strategy:
+      runOnce:
+        deploy:
+          - template: templates/SetDnsRecords.yml
+            parameters:
+              azureSubscription: '$(AzureSubscription)'
+              clusterResourceGroup: '$(ClusterResourceGroup)'
+              resourceGroupNameDNS: $(ResourceGroupNameDNS)
+              resourceGroupLocation: $(ResourceGroupLocation)
+              dnsZoneName: $(DnsZoneName)
+              subDomain: $(SubDomain)
+
+- stage: Dev
+  dependsOn: DNS
+  condition: succeeded('DNS')
   # condition: startsWith(variables['resources.pipeline.fineractBuild.sourcebranch'], 'refs/heads/master')
   variables:
     DeploymentEnvironment: 'dev'
     K8sNamespace: '$(ApiName)-$(DeploymentEnvironment)'
     URL: $(DeploymentEnvironment).$(SubDomain).$(DnsZoneName)
   jobs:
-  - deployment: Web_Dev
-    displayName: 'Deploy fineract to the fineract-dev environment'
-    environment: fineract-dev
+  - deployment: Web_$(DeploymentEnvironment)
+    displayName: 'Deploy fineract to the fineract-$(DeploymentEnvironment) environment'
+    environment: fineract-$(DeploymentEnvironment)
     strategy:
       runOnce:
         deploy:
           steps:
           - download: fineractBuild
             artifact: $(ApiName)
-
-          - template: templates/SetDnsRecords.yml
-            parameters:
-              azureSubscription: '$(AzureSubscription)'
-              clusterResourceGroup: '$(ClusterResourceGroup)'
-              kubernetesCluster: $(AksClusterName)
-              resourceGroupLocation: $(ResourceGroupLocation)
-              dnsZoneName: $(DnsZoneName)
-              resourceGroupNameDNS: $(ResourceGroupNameDNS)
 
           - template: templates/DeployHelmPackage.yml
             parameters:
@@ -63,4 +73,35 @@ stages:
               chartPackage: '$(ChartPackage)'              
               releaseValuesFile: '$(ReleaseValuesFile)' 
               apiName: $(ApiName)
-              
+
+- stage: Test
+  dependsOn: 
+  - DNS
+  - Dev
+  condition: and(succeeded('DNS'), succeeded('Dev'))
+  # condition: startsWith(variables['resources.pipeline.fineractBuild.sourcebranch'], 'refs/heads/master')
+  variables:
+    DeploymentEnvironment: 'test'
+    K8sNamespace: '$(ApiName)-$(DeploymentEnvironment)'
+    URL: $(DeploymentEnvironment).$(SubDomain).$(DnsZoneName)
+  jobs:
+  - deployment: Web_$(DeploymentEnvironment)
+    displayName: 'Deploy fineract to the fineract-$(DeploymentEnvironment) environment'
+    environment: fineract-$(DeploymentEnvironment)
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: fineractBuild
+            artifact: $(ApiName)
+
+          - template: templates/DeployHelmPackage.yml
+            parameters:
+              azureSubscription: '$(AzureSubscription)'
+              clusterResourceGroup: '$(ClusterResourceGroup)'
+              kubernetesCluster: $(AksClusterName)
+              helmVersion: $(HelmVersion)
+              k8sNamespace: $(K8sNamespace)
+              chartPackage: '$(ChartPackage)'              
+              releaseValuesFile: '$(ReleaseValuesFile)' 
+              apiName: $(ApiName)

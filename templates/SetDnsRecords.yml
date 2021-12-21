@@ -17,21 +17,9 @@ parameters:
   - name: resourceGroupNameDNS
     type: string
     default: 
-  # - name: chartPath
-  #   type: string
-  #   default:
-  # - name: buildNumber
-  #   type: string
-  #   default:
-  # - name: artifactStagingDirectory
-  #   type: string
-  #   default:   
-  # - name: artifactName
-  #   type: string
-  #   default: 
-  # - name: releaseValuesFile
-  #   type: string
-  #   default:
+  - name: subDomain
+    type: string
+    default:
 
 steps:
   - task: AzureCLI@2
