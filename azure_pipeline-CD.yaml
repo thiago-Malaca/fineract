@@ -35,6 +35,7 @@ stages:
     strategy:
       runOnce:
         deploy:
+          steps:
           - template: templates/SetDnsRecords.yml
             parameters:
               azureSubscription: '$(AzureSubscription)'
