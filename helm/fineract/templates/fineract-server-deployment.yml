@@ -48,7 +48,7 @@ spec:
           - -wait
           - tcp://{{ include "mysql_host" . }}:3306
           - -timeout
-          - 450s
+          - 600s
       containers:
         - name: fineract-backend
           image: "{{ .Values.fineractServer.image.name }}:{{ .Values.fineractServer.image.tag }}"
