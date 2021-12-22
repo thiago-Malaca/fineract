@@ -51,6 +51,6 @@ steps:
       command: 'upgrade'
       chartType: 'FilePath'
       chartPath: ${{ parameters.chartPackage }}
-      releaseName: ${{ parameters.apiName }}
+      releaseName: ${{ parameters.k8sNamespace }}-${{ parameters.apiName }}
       valueFile: ${{ parameters.releaseValuesFile }}
       arguments: '--create-namespace'
